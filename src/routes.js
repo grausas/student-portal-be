@@ -31,11 +31,11 @@ router.post("/login", (req, res) => {
 
 router.post("/students", (req, res) => {
   const data = req.body;
-  if (data.name && data.surname) {
+  if (data.name && data.surname && data.email) {
     con.query(
       `INSERT INTO students (name, surname) VALUES (${mysql.escape(
         data.name
-      )}, ${mysql.escape(data.surname)})`,
+      )}, ${mysql.escape(data.surname)}), ${mysql.escape(data.email)})`,
       (err, result) => {
         if (err) {
           console.log(err);
