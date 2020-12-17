@@ -29,4 +29,28 @@ router.post("/login", (req, res) => {
   );
 });
 
+router.post("/students", (req, res) => {
+  const data = req.body;
+  if (data.name && data.surname) {
+    con.query(
+      `INSERT INTO students (name, surname) VALUES (${mysql.escape(
+        data.name
+      )}, ${mysql.escape(data.surname)})`,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res
+            .status(400)
+            .json({ msg: "Internal server error adding student details" });
+        } else {
+          console.log(result);
+          return res.status(201).json({ msg: "Student successufully added" });
+        }
+      }
+    );
+  } else {
+    return res.status(400).json({ msg: "Passed values are incorrect" });
+  }
+});
+
 module.exports = router;
