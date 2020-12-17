@@ -53,4 +53,15 @@ router.post("/students", (req, res) => {
   }
 });
 
+router.get("/view-students", (req, res) => {
+  con.query(`SELECT * FROM students`, (err, result) => {
+    if (err) {
+      console.log(err);
+      res
+        .status(400)
+        .json({ msg: "Internal server error getting the details" });
+    } else res.json(result);
+  });
+});
+
 module.exports = router;
