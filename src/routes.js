@@ -64,4 +64,41 @@ router.get("/view-students", (req, res) => {
   });
 });
 
+router.post("/groups", (req, res) => {
+  const data = req.body;
+
+  if (data.studentId) {
+    con.query(
+      `INSERT INTO groups (student_id) VALUES (${mysql.escape(
+        data.studentId
+      )})`,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res
+            .status(400)
+            .json({ msg: "Internal server error adding student to group" });
+        } else {
+          console.log(result);
+          return res
+            .status(201)
+            .json({ msg: "Student successufully added to group" });
+        }
+      }
+    );
+  } else {
+    return res.status(400).json({ msg: "Passed values are incorrect" });
+  }
+});
+
+router.get("/view-groups", (req, res) => {
+  con.query(`SELECT * FROM groups`, (err, result) => {
+    if (err) {
+      console.log(err);
+      res
+        .status(400)
+        .json({ msg: "Internal server error getting the details" });
+    } else res.json(result);
+  });
+});
 module.exports = router;
