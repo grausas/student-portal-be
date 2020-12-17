@@ -33,7 +33,7 @@ router.post("/students", (req, res) => {
   const data = req.body;
   if (data.name && data.surname && data.email) {
     con.query(
-      `INSERT INTO students (name, surname) VALUES (${mysql.escape(
+      `INSERT INTO students (name, surname, email) VALUES (${mysql.escape(
         data.name
       )}, ${mysql.escape(data.surname)}), ${mysql.escape(data.email)})`,
       (err, result) => {
