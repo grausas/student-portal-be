@@ -184,4 +184,16 @@ router.get("/view-groups", (req, res) => {
     } else res.json(result);
   });
 });
+
+router.get("/view-courses", (req, res) => {
+  con.query(`SELECT * FROM courses`, (err, result) => {
+    if (err) {
+      console.log(err);
+      res
+        .status(400)
+        .json({ msg: "Internal server error getting the details" });
+    } else res.json(result);
+  });
+});
+
 module.exports = router;
