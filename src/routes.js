@@ -28,27 +28,35 @@ router.post("/register", middleware.validateUserData, (req, res) => {
               msg: "Internal server error hashing user details",
             });
           } else {
-            con.query(
-              `INSERT INTO lecturers (email, password, name, surname, lectures) VALUES (${mysql.escape(
-                email
-              )}, ${mysql.escape(hash)}, ${mysql.escape(
-                data.name
-              )}, ${mysql.escape(data.surname)}, ${mysql.escape(
-                data.lectures
-              )})`,
-              (err, result) => {
-                if (err) {
-                  console.log(err);
-                  return res
-                    .status(400)
-                    .json({ msg: "Internal server error saving user details" });
-                } else {
-                  return res
-                    .status(200)
-                    .json({ msg: "User has been successfully registered" });
+            if (email && hash && data.name && data.surname && data.lectures) {
+              con.query(
+                `INSERT INTO lecturers (email, password, name, surname, lectures) VALUES (${mysql.escape(
+                  email
+                )}, ${mysql.escape(hash)}, ${mysql.escape(
+                  data.name
+                )}, ${mysql.escape(data.surname)}, ${mysql.escape(
+                  data.lectures
+                )})`,
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                    return res
+                      .status(400)
+                      .json({
+                        msg: "Internal server error saving user details",
+                      });
+                  } else {
+                    return res
+                      .status(200)
+                      .json({ msg: "User has been successfully registered" });
+                  }
                 }
-              }
-            );
+              );
+            } else {
+              return res
+                .status(400)
+                .json({ msg: "Passed values are incorrect" });
+            }
           }
         });
       }
