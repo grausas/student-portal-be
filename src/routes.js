@@ -1,7 +1,60 @@
 const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const middleware = require("./middleware");
 const con = require("./db");
+
+// register lecturer
+router.post("/register", middleware.validateUserData, (req, res) => {
+  const email = req.body.email.toLowerCase();
+  const data = req.body;
+  con.query(
+    `SELECT * FROM lecturers WHERE email = ${mysql.escape(email)}`,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res
+          .status(400)
+          .json({ msg: "Internal server error checking username validity" });
+      } else if (result.length !== 0) {
+        return res.status(400).json({ msg: "This email already exits" });
+      } else {
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          if (err) {
+            comsole.log(err);
+            return res.json({
+              msg: "Internal server error hashing user details",
+            });
+          } else {
+            con.query(
+              `INSERT INTO lecturers (email, password, name, surname, lectures) VALUES (${mysql.escape(
+                email
+              )}, ${mysql.escape(hash)}, ${mysql.escape(
+                data.name
+              )}, ${mysql.escape(data.surname)}, ${mysql.escape(
+                data.lectures
+              )})`,
+              (err, result) => {
+                if (err) {
+                  console.log(err);
+                  return res
+                    .status(400)
+                    .json({ msg: "Internal server error saving user details" });
+                } else {
+                  return res
+                    .status(200)
+                    .json({ msg: "User has been successfully registered" });
+                }
+              }
+            );
+          }
+        });
+      }
+    }
+  );
+});
 
 // lecturers login
 router.post("/login", (req, res) => {
@@ -35,7 +88,7 @@ router.post("/students", (req, res) => {
     con.query(
       `INSERT INTO students (name, surname, email) VALUES (${mysql.escape(
         data.name
-      )}, ${mysql.escape(data.surname)}), ${mysql.escape(data.email)})`,
+      )}, ${mysql.escape(data.surname)}, ${mysql.escape(data.email)})`,
       (err, result) => {
         if (err) {
           console.log(err);
