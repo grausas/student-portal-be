@@ -150,11 +150,11 @@ router.get("/view-students", (req, res) => {
 router.post("/groups", (req, res) => {
   const data = req.body;
 
-  if (data.studentId) {
+  if (data.studentId && data.groupId) {
     con.query(
-      `INSERT INTO groups (student_id) VALUES (${mysql.escape(
+      `INSERT INTO groups (groupId, student_id) VALUES (${mysql.escape(
         data.studentId
-      )})`,
+      )}, ${mysql.escape(data.groupId)})`,
       (err, result) => {
         if (err) {
           console.log(err);
@@ -175,18 +175,38 @@ router.post("/groups", (req, res) => {
 });
 
 router.get("/view-groups", (req, res) => {
-  con.query(`SELECT * FROM groups`, (err, result) => {
-    if (err) {
-      console.log(err);
-      res
-        .status(400)
-        .json({ msg: "Internal server error getting the details" });
-    } else res.json(result);
-  });
+  con.query(
+    `SELECT groupId, name, surname FROM groups t1 INNER JOIN students t2 ON t1.student_id = t2.id`,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res
+          .status(400)
+          .json({ msg: "Internal server error getting the details" });
+      } else {
+        console.log(result);
+        res.json(result);
+      }
+    }
+  );
 });
 
 router.get("/view-courses", (req, res) => {
-  con.query(`SELECT * FROM courses`, (err, result) => {
+  con.query(
+    `SELECT a.name, a.description, b.name, b.surname, c.id FROM courses a INNER JOIN lecturers b ON a.lecturer_id = b.id Inner JOIN groups c ON a.group_id = c.id `,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res
+          .status(400)
+          .json({ msg: "Internal server error getting the details" });
+      } else res.json(result);
+    }
+  );
+});
+
+router.get("/view-lecturers", (req, res) => {
+  con.query(`SELECT * FROM lecturers`, (err, result) => {
     if (err) {
       console.log(err);
       res
