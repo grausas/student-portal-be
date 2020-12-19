@@ -23,7 +23,7 @@ router.post("/register", middleware.validateUserData, (req, res) => {
       } else {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           if (err) {
-            comsole.log(err);
+            console.log(err);
             return res.json({
               msg: "Internal server error hashing user details",
             });
@@ -127,7 +127,7 @@ router.post("/students", (req, res) => {
             .json({ msg: "Internal server error adding student details" });
         } else {
           console.log(result);
-          return res.status(201).json({ msg: "Student successufully added" });
+          return res.status(201).json({ msg: "Student successfully added" });
         }
       }
     );
@@ -153,8 +153,8 @@ router.post("/groups", (req, res) => {
   if (data.studentId && data.groupId) {
     con.query(
       `INSERT INTO groups (groupId, student_id) VALUES (${mysql.escape(
-        data.studentId
-      )}, ${mysql.escape(data.groupId)})`,
+        data.groupId
+      )}, ${mysql.escape(data.studentId)})`,
       (err, result) => {
         if (err) {
           console.log(err);
@@ -176,7 +176,8 @@ router.post("/groups", (req, res) => {
 
 router.get("/view-groups", (req, res) => {
   con.query(
-    `SELECT groupId, name, surname FROM groups t1 INNER JOIN students t2 ON t1.student_id = t2.id`,
+    `SELECT a.id, a.groupId, GROUP_CONCAT(" ", b.surname, " ", b.name ) AS student FROM groups a INNER JOIN students b ON a.student_id = b.id GROUP BY groupId`,
+    // `SELECT * from groups `,
     (err, result) => {
       if (err) {
         console.log(err);
@@ -191,9 +192,36 @@ router.get("/view-groups", (req, res) => {
   );
 });
 
+router.post("/courses", (req, res) => {
+  const data = req.body;
+
+  if (data.courseName && data.description && data.lecturerId && data.groupId) {
+    con.query(
+      `INSERT INTO courses (course_name, description, lecturer_id, group_id) VALUES (${mysql.escape(
+        data.courseName
+      )}, ${mysql.escape(data.description)}, ${mysql.escape(
+        data.lecturerId
+      )}, ${mysql.escape(data.groupId)})`,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(400).json({ msg: "Internal server error adding course" });
+        } else {
+          console.log(result);
+          return res
+            .status(201)
+            .json({ msg: "Course successfully added to database" });
+        }
+      }
+    );
+  } else {
+    return res.status(400).json({ msg: "Passed values are incorrect" });
+  }
+});
+
 router.get("/view-courses", (req, res) => {
   con.query(
-    `SELECT a.name, a.description, b.name, b.surname, c.id FROM courses a INNER JOIN lecturers b ON a.lecturer_id = b.id Inner JOIN groups c ON a.group_id = c.id `,
+    `select a.id, a.course_name, a.description, a.lecturer_id, group_concat(distinct b.student_id) as students,  group_concat(distinct c.name, " ", c.name) as lecturer from courses a, groups b, lecturers c where a.group_id = b.groupId and a.lecturer_id = c.id  group by a.id `,
     (err, result) => {
       if (err) {
         console.log(err);
@@ -214,6 +242,22 @@ router.get("/view-lecturers", (req, res) => {
         .json({ msg: "Internal server error getting the details" });
     } else res.json(result);
   });
+});
+
+router.delete("/delete/:id", (req, res) => {
+  con.query(
+    `DELETE FROM students WHERE id = '${req.params.id}'`,
+    (err, result) => {
+      // console.log(err);
+      // console.log(result);
+      console.log(req.params.id);
+      if (err) {
+        res.status(400).json(err);
+      } else {
+        res.json(result);
+      }
+    }
+  );
 });
 
 module.exports = router;
