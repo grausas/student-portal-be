@@ -194,7 +194,6 @@ router.get("/view-groups", (req, res) => {
 
 router.post("/courses", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
-
   if (data.courseName && data.description && data.lecturerId && data.groupId) {
     con.query(
       `INSERT INTO courses (course_name, description, lecturer_id, group_id) VALUES (${mysql.escape(
@@ -244,12 +243,10 @@ router.get("/view-lecturers", (req, res) => {
   });
 });
 
-router.delete("/delete/:id", middleware.isLoggedIn, (req, res) => {
+router.delete("/delete/:id", (req, res) => {
   con.query(
     `DELETE FROM students WHERE id = '${req.params.id}'`,
     (err, result) => {
-      // console.log(err);
-      // console.log(result);
       console.log(req.params.id);
       if (err) {
         res.status(400).json(err);
