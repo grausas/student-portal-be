@@ -112,7 +112,7 @@ router.post("/login", middleware.validateUserData, (req, res) => {
   );
 });
 
-router.post("/students", (req, res) => {
+router.post("/students", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
   if (data.name && data.surname && data.email) {
     con.query(
@@ -147,7 +147,7 @@ router.get("/view-students", (req, res) => {
   });
 });
 
-router.post("/groups", (req, res) => {
+router.post("/groups", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
 
   if (data.studentId && data.groupId) {
@@ -176,7 +176,7 @@ router.post("/groups", (req, res) => {
 
 router.get("/view-groups", (req, res) => {
   con.query(
-    `SELECT a.id, a.groupId, GROUP_CONCAT(" ", b.surname, " ", b.name ) AS student FROM groups a INNER JOIN students b ON a.student_id = b.id GROUP BY groupId`,
+    `SELECT a.id, a.groupId, GROUP_CONCAT(distinct ' ', b.name, ' ', b.surname ) AS student FROM groups a INNER JOIN students b ON a.student_id = b.id GROUP BY groupId`,
     // `SELECT * from groups `,
     (err, result) => {
       if (err) {
@@ -192,7 +192,7 @@ router.get("/view-groups", (req, res) => {
   );
 });
 
-router.post("/courses", (req, res) => {
+router.post("/courses", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
 
   if (data.courseName && data.description && data.lecturerId && data.groupId) {
@@ -221,7 +221,7 @@ router.post("/courses", (req, res) => {
 
 router.get("/view-courses", (req, res) => {
   con.query(
-    `select a.id, a.course_name, a.description, a.lecturer_id, group_concat(distinct b.student_id) as students,  group_concat(distinct c.name, " ", c.name) as lecturer from courses a, groups b, lecturers c where a.group_id = b.groupId and a.lecturer_id = c.id  group by a.id `,
+    `select a.id, a.course_name, a.description, group_concat(distinct ' ', d.surname, ' ', d.name ) as students,  group_concat(distinct c.name, " ", c.surname) as lecturer from courses a, groups b, lecturers c, students d  where a.group_id = b.groupId and b.student_id = d.id and a.lecturer_id = c.id group by a.id`,
     (err, result) => {
       if (err) {
         console.log(err);
@@ -244,7 +244,7 @@ router.get("/view-lecturers", (req, res) => {
   });
 });
 
-router.delete("/delete/:id", (req, res) => {
+router.delete("/delete/:id", middleware.isLoggedIn, (req, res) => {
   con.query(
     `DELETE FROM students WHERE id = '${req.params.id}'`,
     (err, result) => {
