@@ -136,7 +136,7 @@ router.post("/students", middleware.isLoggedIn, (req, res) => {
   }
 });
 
-router.get("/view-students", (req, res) => {
+router.get("/view-students", middleware.isLoggedIn, (req, res) => {
   con.query(`SELECT * FROM students`, (err, result) => {
     if (err) {
       console.log(err);
@@ -174,7 +174,7 @@ router.post("/groups", middleware.isLoggedIn, (req, res) => {
   }
 });
 
-router.get("/view-groups", (req, res) => {
+router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
   con.query(
     `SELECT a.id, a.groupId, GROUP_CONCAT(distinct ' ', b.name, ' ', b.surname ) AS student FROM groups a INNER JOIN students b ON a.student_id = b.id GROUP BY groupId`,
     // `SELECT * from groups `,
@@ -218,7 +218,7 @@ router.post("/courses", middleware.isLoggedIn, (req, res) => {
   }
 });
 
-router.get("/view-courses", (req, res) => {
+router.get("/view-courses", middleware.isLoggedIn, (req, res) => {
   con.query(
     `select a.id, a.course_name, a.description, group_concat(distinct ' ', d.surname, ' ', d.name ) as students,  group_concat(distinct c.name, " ", c.surname) as lecturer from courses a, groups b, lecturers c, students d  where a.group_id = b.groupId and b.student_id = d.id and a.lecturer_id = c.id group by a.id`,
     (err, result) => {
@@ -232,7 +232,7 @@ router.get("/view-courses", (req, res) => {
   );
 });
 
-router.get("/view-lecturers", (req, res) => {
+router.get("/view-lecturers", middleware.isLoggedIn, (req, res) => {
   con.query(`SELECT * FROM lecturers`, (err, result) => {
     if (err) {
       console.log(err);
@@ -243,7 +243,7 @@ router.get("/view-lecturers", (req, res) => {
   });
 });
 
-router.delete("/delete/:id", (req, res) => {
+router.delete("/delete/:id", middleware.isLoggedIn, (req, res) => {
   con.query(
     `DELETE FROM students WHERE id = '${req.params.id}'`,
     (err, result) => {
