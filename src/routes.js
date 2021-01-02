@@ -89,7 +89,7 @@ router.post("/login", middleware.validateUserData, (req, res) => {
               if (bErr || !bResult) {
                 return res.status(400).json({
                   msg:
-                    "The provided details are incorect or the user doesnt not exits",
+                    "The provided details are incorect or the user does not exits",
                 });
               } else if (bResult) {
                 const token = jwt.sign(
@@ -122,9 +122,11 @@ router.post("/students", middleware.isLoggedIn, (req, res) => {
   if (data.name && data.surname && data.email) {
     database((db) =>
       db.query(
-        `INSERT INTO students (name, surname, email) VALUES (${mysql.escape(
+        `INSERT INTO students (name, surname, email, phone, course) VALUES (${mysql.escape(
           data.name
-        )}, ${mysql.escape(data.surname)}, ${mysql.escape(data.email)})`,
+        )}, ${mysql.escape(data.surname)}, ${mysql.escape(
+          data.email
+        )}, ${mysql.escape(data.phone)}, ${mysql.escape(data.course)})`,
         (err, result) => {
           if (err) {
             console.log(err);
