@@ -29,15 +29,13 @@ router.post("/register", middleware.validateUserData, (req, res) => {
                 msg: "Internal server error hashing user details",
               });
             } else {
-              if (email && hash && data.name && data.surname && data.lectures) {
+              if (email && hash && data.name && data.surname) {
                 db.query(
-                  `INSERT INTO lecturers (email, password, name, surname, lectures) VALUES (${mysql.escape(
+                  `INSERT INTO lecturers (email, password, name, surname) VALUES (${mysql.escape(
                     email
                   )}, ${mysql.escape(hash)}, ${mysql.escape(
                     data.name
-                  )}, ${mysql.escape(data.surname)}, ${mysql.escape(
-                    data.lectures
-                  )})`,
+                  )}, ${mysql.escape(data.surname)})`,
                   (err, result) => {
                     if (err) {
                       console.log(err);
