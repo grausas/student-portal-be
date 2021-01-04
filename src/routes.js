@@ -117,14 +117,14 @@ router.post("/login", middleware.validateUserData, (req, res) => {
 
 router.post("/students", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
-  if (data.name && data.surname && data.email) {
+  if (data.name && data.surname && data.email && data.phone && data.studing) {
     database((db) =>
       db.query(
-        `INSERT INTO students (name, surname, email, phone, course) VALUES (${mysql.escape(
+        `INSERT INTO students (name, surname, email, phone, studing) VALUES (${mysql.escape(
           data.name
         )}, ${mysql.escape(data.surname)}, ${mysql.escape(
           data.email
-        )}, ${mysql.escape(data.phone)}, ${mysql.escape(data.course)})`,
+        )}, ${mysql.escape(data.phone)}, ${mysql.escape(data.studing)})`,
         (err, result) => {
           if (err) {
             console.log(err);
