@@ -117,7 +117,7 @@ router.post("/login", middleware.validateUserData, (req, res) => {
 
 router.post("/students", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
-  if (data.name && data.surname && data.email && data.phone && data.studing) {
+  if (data.name && data.surname && data.email && data.phone) {
     database((db) =>
       db.query(
         `INSERT INTO students (name, surname, email, phone, studing) VALUES (${mysql.escape(
