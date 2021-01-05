@@ -162,7 +162,7 @@ router.post("/groups", middleware.isLoggedIn, (req, res) => {
   if (data.studentId && data.groupId) {
     database((db) =>
       db.query(
-        `INSERT INTO groups (groupId, student_id) VALUES (${mysql.escape(
+        `INSERT INTO student_groups (groupId, student_id) VALUES (${mysql.escape(
           data.groupId
         )}, ${mysql.escape(data.studentId)})`,
         (err, result) => {
@@ -188,7 +188,7 @@ router.post("/groups", middleware.isLoggedIn, (req, res) => {
 router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
-      `SELECT a.id, a.groupId, GROUP_CONCAT(distinct ' ', b.name, ' ', b.surname ) AS student FROM groups a INNER JOIN students b ON a.student_id = b.id GROUP BY groupId`,
+      `SELECT a.id, a.groupId, GROUP_CONCAT(distinct ' ', b.name, ' ', b.surname ) AS student FROM student_groups a INNER JOIN students b ON a.student_id = b.id GROUP BY groupId`,
       // `SELECT * from groups `,
       (err, result) => {
         if (err) {
@@ -238,7 +238,7 @@ router.post("/courses", middleware.isLoggedIn, (req, res) => {
 router.get("/view-courses", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
-      `select a.id, a.course_name, a.description, group_concat(distinct ' ', d.surname, ' ', d.name ) as students,  group_concat(distinct c.name, " ", c.surname) as lecturer from courses a, groups b, lecturers c, students d  where a.group_id = b.groupId and b.student_id = d.id and a.lecturer_id = c.id group by a.id`,
+      `select a.id, a.course_name, a.description, group_concat(distinct ' ', d.surname, ' ', d.name ) as students,  group_concat(distinct c.name, " ", c.surname) as lecturer from courses a, student_groups b, lecturers c, students d  where a.group_id = b.groupId and b.student_id = d.id and a.lecturer_id = c.id group by a.id`,
       (err, result) => {
         if (err) {
           console.log(err);
