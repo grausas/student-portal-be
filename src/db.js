@@ -1,5 +1,5 @@
 const mysql = require("mysql");
-require("dotenv").config();
+require("dotenv").config({ silent: process.env.NODE_ENV === "production" });
 
 const databaseConfig = {
   host: process.env.MYSQL_DB_HOST,
