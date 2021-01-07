@@ -159,7 +159,7 @@ router.get("/view-students", middleware.isLoggedIn, (req, res) => {
 });
 
 //edit student
-router.post("/editstudent", middleware.isLoggedIn, (req, res) => {
+router.post("/editstudent/:id", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
   if (data.name && data.surname && data.email && data.phone) {
     database((db) =>
@@ -168,7 +168,7 @@ router.post("/editstudent", middleware.isLoggedIn, (req, res) => {
           data.name
         )}, surname = ${mysql.escape(data.surname)}, email = ${mysql.escape(
           data.email
-        )}, phone = ${mysql.escape(data.phone)} WHERE id = '${data.id}'`,
+        )}, phone = ${mysql.escape(data.phone)} WHERE id = '${req.params.id}'`,
         (err) => {
           if (err) {
             console.log(err);
