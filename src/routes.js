@@ -115,6 +115,7 @@ router.post("/login", middleware.validateUserData, (req, res) => {
   );
 });
 
+//add students
 router.post("/students", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
   if (data.name && data.surname && data.email && data.phone) {
@@ -143,6 +144,7 @@ router.post("/students", middleware.isLoggedIn, (req, res) => {
   }
 });
 
+//get all students
 router.get("/view-students", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(`SELECT * FROM students`, (err, result) => {
@@ -154,6 +156,34 @@ router.get("/view-students", middleware.isLoggedIn, (req, res) => {
       } else res.json(result);
     })
   );
+});
+
+//edit student
+router.post("/editstudent", middleware.isLoggedIn, (req, res) => {
+  const data = req.body;
+  if (data.name && data.surname && data.email && data.phone) {
+    database((db) =>
+      db.query(
+        `UPDATE students SET name = ${mysql.escape(
+          data.name
+        )}, surname = ${mysql.escape(data.surname)}, email = ${mysql.escape(
+          data.email
+        )}, phone = ${mysql.escape(data.phone)} WHERE id = '${data.id}'`,
+        (err) => {
+          if (err) {
+            console.log(err);
+            return res.status(400).json({ msg: "Internal server error" });
+          } else {
+            return res
+              .status(200)
+              .json({ msg: "User has been updated succesfully" });
+          }
+        }
+      )
+    );
+  } else {
+    return res.status(400).json({ msg: "Passed values are incorrect" });
+  }
 });
 
 router.post("/groups", middleware.isLoggedIn, (req, res) => {
