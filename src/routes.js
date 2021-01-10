@@ -118,7 +118,15 @@ router.post("/login", middleware.validateUserData, (req, res) => {
 //add students
 router.post("/students", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
-  if (data.name && data.surname && data.email && data.phone) {
+  if (
+    data.name.length > 2 &&
+    data.name.length < 50 &&
+    data.surname.length > 2 &&
+    data.surname.length < 50 &&
+    data.email.length > 5 &&
+    data.email.length < 256 &&
+    data.phone
+  ) {
     database((db) =>
       db.query(
         `INSERT INTO students (name, surname, email, phone, studing) VALUES (${mysql.escape(
