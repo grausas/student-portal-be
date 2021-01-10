@@ -169,7 +169,15 @@ router.get("/view-students", middleware.isLoggedIn, (req, res) => {
 //edit student
 router.post("/editstudent/:id", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
-  if (data.name && data.surname && data.email && data.phone) {
+  if (
+    data.name.length > 2 &&
+    data.name.length < 50 &&
+    data.surname.length > 2 &&
+    data.surname.length < 50 &&
+    data.email.length > 5 &&
+    data.email.length < 256 &&
+    data.phone
+  ) {
     database((db) =>
       db.query(
         `UPDATE students SET name = ${mysql.escape(
