@@ -87,7 +87,7 @@ router.post("/login", middleware.validateUserData, (req, res) => {
               if (bErr || !bResult) {
                 return res.status(400).json({
                   msg:
-                    "The provided details are incorect or the user does not exits",
+                    "The provided details are incorrect or the user does not exist",
                 });
               } else if (bResult) {
                 const token = jwt.sign(
@@ -205,23 +205,21 @@ router.post("/editstudent/:id", middleware.isLoggedIn, (req, res) => {
 //add group
 router.post("/groups", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
-  console.log(req.body);
   database((db) =>
     db.query(
       `SELECT * FROM student_groups WHERE student_id = ${mysql.escape(
         data.studentId
       )}`,
       (err, result) => {
-        console.log(result);
         if (err) {
           console.log(err);
           return res
             .status(400)
-            .json({ msg: "Internal server error checking username validity" });
+            .json({ msg: "Internal server error checking groups validity" });
         } else if (result.length !== 0) {
           return res
             .status(400)
-            .json({ msg: "This student already is in group" });
+            .json({ msg: "This student is already in a group" });
         } else {
           if (data.studentId && data.groupId) {
             db.query(
