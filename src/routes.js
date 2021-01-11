@@ -234,7 +234,7 @@ router.post("/groups", middleware.isLoggedIn, (req, res) => {
 router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
-      `SELECT a.id, a.groupId, GROUP_CONCAT(distinct ' ', b.name, ' ', b.surname ) AS student FROM student_groups a INNER JOIN students b ON a.student_id = b.id GROUP BY groupId`,
+      `SELECT a.id, a.groupId, GROUP_CONCAT(distinct ' ', b.name, ' ', b.surname ) AS student FROM student_groups a JOIN students b ON a.student_id = b.id GROUP BY groupId`,
       // `SELECT * from groups `,
       (err, result) => {
         if (err) {
@@ -253,7 +253,13 @@ router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
 
 router.post("/courses", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
-  if (data.courseName && data.description && data.lecturerId && data.groupId) {
+  if (
+    data.courseName.legth > 2 &&
+    data.courseName.length < 128 &&
+    data.description.length < 128 &&
+    data.lecturerId &&
+    data.groupId
+  ) {
     database((db) =>
       db.query(
         `INSERT INTO courses (course_name, description, lecturer_id, group_id) VALUES (${mysql.escape(
