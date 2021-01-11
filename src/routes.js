@@ -202,33 +202,53 @@ router.post("/editstudent/:id", middleware.isLoggedIn, (req, res) => {
   }
 });
 
+//add group
 router.post("/groups", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
-
-  if (data.studentId && data.groupId) {
-    database((db) =>
-      db.query(
-        `INSERT INTO student_groups (groupId, student_id) VALUES (${mysql.escape(
-          data.groupId
-        )}, ${mysql.escape(data.studentId)})`,
-        (err, result) => {
-          if (err) {
-            console.log(err);
-            res
-              .status(400)
-              .json({ msg: "Internal server error adding student to group" });
+  console.log(req.body);
+  database((db) =>
+    db.query(
+      `SELECT * FROM student_groups WHERE student_id = ${mysql.escape(
+        data.studentId
+      )}`,
+      (err, result) => {
+        console.log(result);
+        if (err) {
+          console.log(err);
+          return res
+            .status(400)
+            .json({ msg: "Internal server error checking username validity" });
+        } else if (result.length !== 0) {
+          return res
+            .status(400)
+            .json({ msg: "This student already is in group" });
+        } else {
+          if (data.studentId && data.groupId) {
+            db.query(
+              `INSERT INTO student_groups (groupId, student_id) VALUES (${mysql.escape(
+                data.groupId
+              )}, ${mysql.escape(data.studentId)})`,
+              (err, result) => {
+                if (err) {
+                  console.log(err);
+                  res.status(400).json({
+                    msg: "Internal server error adding student to group",
+                  });
+                } else {
+                  console.log(result);
+                  return res
+                    .status(201)
+                    .json({ msg: "Student successufully added to group" });
+                }
+              }
+            );
           } else {
-            console.log(result);
-            return res
-              .status(201)
-              .json({ msg: "Student successufully added to group" });
+            return res.status(400).json({ msg: "Passed values are incorrect" });
           }
         }
-      )
-    );
-  } else {
-    return res.status(400).json({ msg: "Passed values are incorrect" });
-  }
+      }
+    )
+  );
 });
 
 router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
