@@ -357,7 +357,22 @@ router.delete("/delete/:id", middleware.isLoggedIn, (req, res) => {
     db.query(
       `DELETE FROM students WHERE id = '${req.params.id}'`,
       (err, result) => {
-        console.log(req.params.id);
+        if (err) {
+          res.status(400).json(err);
+        } else {
+          res.json(result);
+        }
+      }
+    )
+  );
+});
+
+//delete group
+router.delete("/deletegroup/:id", middleware.isLoggedIn, (req, res) => {
+  database((db) =>
+    db.query(
+      `DELETE FROM student_groups WHERE groupId = '${req.params.id}'`,
+      (err, result) => {
         if (err) {
           res.status(400).json(err);
         } else {
