@@ -34,8 +34,8 @@ router.post("/register", middleware.validateUserData, (req, res) => {
                   `INSERT INTO lecturers (email, password, name, surname) VALUES (${mysql.escape(
                     email
                   )}, ${mysql.escape(hash)}, ${mysql.escape(
-                    data.name.toUpperCase()
-                  )}, ${mysql.escape(data.surname.toUpperCase())})`,
+                    data.name
+                  )}, ${mysql.escape(data.surname)})`,
                   (err, result) => {
                     if (err) {
                       console.log(err);
@@ -130,8 +130,8 @@ router.post("/students", middleware.isLoggedIn, (req, res) => {
     database((db) =>
       db.query(
         `INSERT INTO students (name, surname, email, phone, studing) VALUES (${mysql.escape(
-          data.name.toUpperCase()
-        )}, ${mysql.escape(data.surname.toUpperCase())}, ${mysql.escape(
+          data.name
+        )}, ${mysql.escape(data.surname)}, ${mysql.escape(
           data.email
         )}, ${mysql.escape(data.phone)}, ${mysql.escape(data.studing)})`,
         (err, result) => {
