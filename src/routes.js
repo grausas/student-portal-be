@@ -233,19 +233,19 @@ router.post("/groups", middleware.isLoggedIn, (req, res) => {
                     msg: "Internal server error adding student to group",
                   });
                 } else {
-                  console.log(result);
                   db.query(
                     `UPDATE students a INNER JOIN student_groups b SET a.group_id = b.groupId WHERE a.id = b.student_id`,
                     (err, result) => {
                       if (err) {
                         console.log(err);
+                        res.status(400).json({
+                          msg: "Internal server error updating group",
+                        });
                       } else {
                         console.log(result);
-                        return res
-                          .status(201)
-                          .json({
-                            msg: "Student successufully added to group",
-                          });
+                        return res.status(201).json({
+                          msg: "Student successufully added to group",
+                        });
                       }
                     }
                   );
@@ -265,7 +265,6 @@ router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
       `SELECT a.id, a.groupId, GROUP_CONCAT(distinct ' ', b.name, ' ', b.surname ) AS student FROM student_groups a JOIN students b ON a.student_id = b.id GROUP BY groupId`,
-      // `SELECT * from groups `,
       (err, result) => {
         if (err) {
           console.log(err);
