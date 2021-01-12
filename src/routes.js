@@ -286,9 +286,8 @@ router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
 router.post("/courses", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
   if (
-    data.courseName.legth > 2 &&
-    data.courseName.length < 128 &&
-    data.description.length < 128 &&
+    data.courseName.length > 2 &&
+    data.description &&
     data.lecturerId &&
     data.groupId
   ) {
@@ -322,7 +321,7 @@ router.post("/courses", middleware.isLoggedIn, (req, res) => {
 router.get("/view-courses", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
-      `select a.id, a.course_name, a.description, group_concat(distinct ' ', d.surname, ' ', d.name ) as students,  group_concat(distinct c.name, " ", c.surname) as lecturer from courses a, student_groups b, lecturers c, students d  where a.group_id = b.groupId and b.student_id = d.id and a.lecturer_id = c.id group by a.id`,
+      `SELECT a.id, a.course_name, a.description, group_concat(distinct ' ', d.name, ' ', d.surname ) AS students,  group_concat(distinct c.name, " ", c.surname) AS lecturer FROM courses a, student_groups b, lecturers c, students d  WHERE a.group_id = b.groupId AND b.student_id = d.id AND a.lecturer_id = c.id group by a.id`,
       (err, result) => {
         if (err) {
           console.log(err);
