@@ -376,7 +376,16 @@ router.delete("/deletegroup/:id", middleware.isLoggedIn, (req, res) => {
         if (err) {
           res.status(400).json(err);
         } else {
-          res.json(result);
+          db.query(
+            `UPDATE students set group_id = "" WHERE group_id = '${req.params.id}'`,
+            (err, result) => {
+              if (err) {
+                res.status(400).json(err);
+              } else {
+                res.json(result);
+              }
+            }
+          );
         }
       }
     )
