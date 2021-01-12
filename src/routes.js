@@ -26,7 +26,7 @@ router.post("/register", middleware.validateUserData, (req, res) => {
             if (err) {
               console.log(err);
               return res.json({
-                msg: "Internal server error hashing user details",
+                msg: "Internal server error hashing lecturer details",
               });
             } else {
               if (email && hash && data.name && data.surname) {
@@ -43,9 +43,9 @@ router.post("/register", middleware.validateUserData, (req, res) => {
                         msg: "Internal server error saving user details",
                       });
                     } else {
-                      return res
-                        .status(200)
-                        .json({ msg: "User has been successfully registered" });
+                      return res.status(200).json({
+                        msg: "Lecturer has been successfully registered",
+                      });
                     }
                   }
                 );
@@ -264,6 +264,7 @@ router.post("/groups", middleware.isLoggedIn, (req, res) => {
   );
 });
 
+//get groups
 router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
@@ -283,6 +284,7 @@ router.get("/view-groups", middleware.isLoggedIn, (req, res) => {
   );
 });
 
+//add course
 router.post("/courses", middleware.isLoggedIn, (req, res) => {
   const data = req.body;
   if (
@@ -318,6 +320,7 @@ router.post("/courses", middleware.isLoggedIn, (req, res) => {
   }
 });
 
+//get courses
 router.get("/view-courses", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
@@ -334,6 +337,7 @@ router.get("/view-courses", middleware.isLoggedIn, (req, res) => {
   );
 });
 
+//get lecturers
 router.get("/view-lecturers", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(`SELECT * FROM lecturers`, (err, result) => {
@@ -347,6 +351,7 @@ router.get("/view-lecturers", middleware.isLoggedIn, (req, res) => {
   );
 });
 
+//delete student
 router.delete("/delete/:id", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
