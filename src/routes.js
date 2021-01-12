@@ -155,14 +155,17 @@ router.post("/students", middleware.isLoggedIn, (req, res) => {
 //get all students
 router.get("/view-students", middleware.isLoggedIn, (req, res) => {
   database((db) =>
-    db.query(`SELECT * FROM students`, (err, result) => {
-      if (err) {
-        console.log(err);
-        res
-          .status(400)
-          .json({ msg: "Internal server error getting the details" });
-      } else res.json(result);
-    })
+    db.query(
+      `SELECT a.*, b.course_name FROM students a LEFT JOIN courses b on a.group_id = b.group_id `,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res
+            .status(400)
+            .json({ msg: "Internal server error getting the details" });
+        } else res.json(result);
+      }
+    )
   );
 });
 
