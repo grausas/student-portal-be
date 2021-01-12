@@ -234,9 +234,21 @@ router.post("/groups", middleware.isLoggedIn, (req, res) => {
                   });
                 } else {
                   console.log(result);
-                  return res
-                    .status(201)
-                    .json({ msg: "Student successufully added to group" });
+                  db.query(
+                    `UPDATE students a INNER JOIN student_groups b SET a.group_id = b.groupId WHERE a.id = b.student_id`,
+                    (err, result) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log(result);
+                        return res
+                          .status(201)
+                          .json({
+                            msg: "Student successufully added to group",
+                          });
+                      }
+                    }
+                  );
                 }
               }
             );
