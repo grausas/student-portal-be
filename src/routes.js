@@ -401,4 +401,19 @@ router.delete("/deletegroup/:id", middleware.isLoggedIn, (req, res) => {
   );
 });
 
+router.get("/counts", middleware.isLoggedIn, (req, res) => {
+  database((db) =>
+    db.query(
+      `SELECT COUNT(id) as studentsCount from students`,
+      (err, result) => {
+        if (err) {
+          res.status(400).json(err);
+        } else {
+          res.json(result);
+        }
+      }
+    )
+  );
+});
+
 module.exports = router;
