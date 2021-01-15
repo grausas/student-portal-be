@@ -13,7 +13,10 @@ This is a back end repository for project: https://github.com/grausas/student-po
 ## Installation
 
 1.  Clone repo
-    https://github.com/grausas/student-portal-be.git
+```
+https://github.com/grausas/student-portal-be.git
+
+```
 2.  Install npm packages
     npm install
 3.  Add environment variables to .env file and run app
