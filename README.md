@@ -15,7 +15,6 @@ This is a back end repository for project: https://github.com/grausas/student-po
 1.  Clone repo
 ```
 https://github.com/grausas/student-portal-be.git
-
 ```
 2.  Install npm packages
     npm install
