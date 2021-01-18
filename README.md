@@ -8,7 +8,7 @@ Demo CRUD project where you can add students, groups and courses.
 - JWT for authentication
 - AWS mysql database
 
-This is a back end repository for project: https://github.com/grausas/student-portal-fe.git
+Front end repository for this project: https://github.com/grausas/student-portal-fe.git
 
 ## Installation
 
