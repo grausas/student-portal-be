@@ -401,6 +401,7 @@ router.delete("/deletegroup/:id", middleware.isLoggedIn, (req, res) => {
   );
 });
 
+// counts
 router.get("/counts", middleware.isLoggedIn, (req, res) => {
   database((db) =>
     db.query(
