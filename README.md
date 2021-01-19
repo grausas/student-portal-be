@@ -1,8 +1,8 @@
-# Student Portal back-end
+# :mortar_board: Student Portal back-end
 
 Demo CRUD project where you can add students, groups and courses.
 
-# Built With
+## :hammer: Built With
 
 - Node.js, Express.js
 - JWT for authentication
@@ -10,7 +10,7 @@ Demo CRUD project where you can add students, groups and courses.
 
 Front end repository for this project: https://github.com/grausas/student-portal-fe.git
 
-## Installation
+## :computer: Installation
 
 1.  Clone repo
 ```
@@ -20,3 +20,4 @@ https://github.com/grausas/student-portal-be.git
     npm install
 3.  Add environment variables to .env file and run app
     npm run start
+
