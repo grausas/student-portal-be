@@ -1,6 +1,7 @@
 # :mortar_board: Student Portal back-end
 
-Demo CRUD project where you can add students, groups and courses.
+This project was created only for demo purposes. 
+CRUD based project where you can manage data of students, groups and courses.
 
 ## :hammer: Built With
 
